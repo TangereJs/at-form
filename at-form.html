@@ -1,0 +1,45 @@
+
+<link rel="import" href="../paper-button/paper-button.html" />
+<link rel="import" href="../core-ajax/core-ajax.html" />
+<link rel="import" href="../at-core-form/at-core-form.html" />
+
+<polymer-element name="at-form" attributes="schema data url">
+  <template>
+    <core-ajax id="submitAjax" url="{{ url }}" method="POST" contentType="application/json" withCredentials  on-core-response="{{ submitResponse }}" on-core-error="{{ submitError }}"></core-ajax>
+    <at-core-form id="form" schema="{{ schema }}" data="{{ data }}"></at-core-form>
+    <label id="errorLabel"></label>
+    <paper-button id="submit" raised role="button">Submit</paper-button>
+  </template>
+  <script>
+    Polymer('at-form', {
+      ready: function () {
+        var self = this;
+        var formObserver = new ObjectObserver(this.$.form);
+        formObserver.open(function (added, removed, changed, getOldValueFn) {
+          Object.keys(changed).forEach(function (property) {
+            if (property === "valid_") {
+              self.$.submit.disabled = !changed[property];
+            }
+          });
+        });
+
+        this.$.submit.disabled = !this.$.form.valid;
+
+        this.$.submit.addEventListener('click', function (event) {
+          var data = JSON.stringify(self.$.form.dataBindingObject);
+          self.$.submitAjax.body = data;
+          self.$.submitAjax.go();
+        });
+      },
+      submitResponse: function (event, response) {
+        this.$.errorLabel.textContent = response.response;
+        //debugger;
+      },
+      submitError: function (event, response) {
+        //debugger;
+        var xhr = response.xhr;
+        this.$.errorLabel.textContent = xhr.responseURL + " " + xhr.status + ": " + response.xhr.statusText;
+      }
+    });
+  </script>
+</polymer-element>

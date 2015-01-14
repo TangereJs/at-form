@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>at-form Demo</title>
+
+  <script src="../webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="../polymer/polymer.html" />
+  <link rel="import" href="at-form.html">
+
+</head>
+<body unresolved>
+  <at-form id="atForm" url="http://localhost:2014/Activity/adenin.GateKeeper.ClientLog/LogMessage"></at-form>
+
+  <script>
+    
+    document.addEventListener('polymer-ready', function () {
+      var schema = {
+        "properties":
+        {
+          "logMessageLevel": { "type": "string", "xtype": "enum", "xvaluelist": "debug,info,warn,error,fatal", "default": "info", "description": "Warn Level" },
+          "message": { "type": "string", "required": "true" },
+        }
+      };
+
+      var atForm = document.getElementById('atForm');
+      atForm.schema = schema;
+    });
+  </script>
+</body>
+</html>
