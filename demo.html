@@ -18,13 +18,17 @@
       var schema = {
         "properties":
         {
-          "logMessageLevel": { "type": "string", "xtype": "enum", "xvaluelist": "debug,info,warn,error,fatal", "default": "info", "description": "Warn Level" },
+          "logMessageLevel": { "type": "string", "xtype": "enum", "xvaluelist": "debug,info,warn,error,fatal", "default": "info", "description": "Warn Level", "disabled":"true" },
           "message": { "type": "string", "required": "true" },
         }
       };
 
       var atForm = document.getElementById('atForm');
       atForm.schema = schema;
+
+      atForm.addEventListener('success', function (event) {
+        alert("Success");
+      })
     });
   </script>
 </body>

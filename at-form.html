@@ -6,9 +6,15 @@
 <polymer-element name="at-form" attributes="schema data url">
   <template>
     <core-ajax id="submitAjax" url="{{ url }}" method="POST" contentType="application/json" withCredentials  on-core-response="{{ submitResponse }}" on-core-error="{{ submitError }}"></core-ajax>
-    <at-core-form id="form" schema="{{ schema }}" data="{{ data }}"></at-core-form>
-    <label id="errorLabel"></label>
-    <paper-button id="submit" raised role="button">Submit</paper-button>
+    <div vertical layout>
+      <at-core-form id="form" schema="{{ schema }}" data="{{ data }}"></at-core-form>
+      <div horizontal layout left-justified>
+        <label id="errorLabel"></label>
+      </div>
+        <div horizontal layout left-justified>
+          <paper-button id="submit" raised role="button">Submit</paper-button>
+        </div>
+      </div>
   </template>
   <script>
     Polymer('at-form', {
@@ -26,19 +32,40 @@
         this.$.submit.disabled = !this.$.form.valid;
 
         this.$.submit.addEventListener('click', function (event) {
+          // disable the form
+          self.disableForm();
+
           var data = JSON.stringify(self.$.form.dataBindingObject);
           self.$.submitAjax.body = data;
           self.$.submitAjax.go();
         });
       },
       submitResponse: function (event, response) {
-        this.$.errorLabel.textContent = response.response;
-        //debugger;
+        this.$.errorLabel.textContent = response.response;        
+        //enable the form
+        this.enableForm();
+        // if submit was successfull fire success event
+        var resObj = JSON.parse(response.response);
+        var errorCode = resObj.ErrorCode;
+        if (errorCode === 0) {
+          this.fire('success');
+        }
       },
       submitError: function (event, response) {
         //debugger;
         var xhr = response.xhr;
         this.$.errorLabel.textContent = xhr.responseURL + " " + xhr.status + ": " + response.xhr.statusText;
+
+        //enable the form
+        this.enableForm();
+      },
+      enableForm: function () {
+        this.$.submit.setAttribute('disabled', 'false');
+        this.$.form.setAttribute('disabled', 'false');
+      },
+      disableForm: function () {
+        this.$.submit.setAttribute('disabled', 'true');
+        this.$.form.setAttribute('disabled', 'true');
       }
     });
   </script>
