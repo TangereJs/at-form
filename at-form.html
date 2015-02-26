@@ -34,6 +34,7 @@
         this.$.submit.addEventListener('click', function (event) {
           // disable the form
           self.disableForm();
+          self.$.form.updateValidState();
 
           var data = JSON.stringify(self.$.form.dataBindingObject);
           self.$.submitAjax.body = data;
@@ -43,6 +44,8 @@
       submitResponse: function (event, response) {
         //enable the form
         this.enableForm();
+        this.$.form.updateValidState();
+
         // if submit was successfull fire success event
         var resObj = JSON.parse(response.response);
         var errorCode = resObj.ErrorCode;
@@ -59,7 +62,7 @@
         this.enableForm();
       },
       enableForm: function () {
-        this.$.submit.setAttribute('disabled', 'false');
+        this.$.submit.removeAttribute('disabled');
         this.$.form.setAttribute('disabled', 'false');
       },
       disableForm: function () {
