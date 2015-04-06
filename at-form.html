@@ -1,74 +1,89 @@
-
-<link rel="import" href="../paper-button/paper-button.html" />
 <link rel="import" href="../core-ajax/core-ajax.html" />
 <link rel="import" href="../at-core-form/at-core-form.html" />
+<link rel="import" href="../layout/layout.html" />
 
-<polymer-element name="at-form" attributes="schema data url">
+<dom-module id="at-form">
   <template>
-    <core-ajax id="submitAjax" url="{{ url }}" method="POST" contentType="application/json" withCredentials  on-core-response="{{ submitResponse }}" on-core-error="{{ submitError }}"></core-ajax>
-    <div vertical layout>
-      <at-core-form id="form" schema="{{ schema }}" data="{{ data }}"></at-core-form>
-      <div horizontal layout left-justified>
+    <core-ajax id="submitAjax" url="{{url}}" method="POST" content-type="application/json" on-response="submitResponse" on-error="submitError"></core-ajax>
+    <div class="vertical layout">
+      <at-core-form id="form" schema="{{schema}}" data="{{data}}"></at-core-form>
+      <div class="horizontal layout left-justified">
         <label id="errorLabel"></label>
       </div>
-        <div horizontal layout left-justified>
-          <paper-button id="submit" raised role="button">Submit</paper-button>
-        </div>
+      <div class="horizontal layout left-justified">
+        <input type="button" id="submit" role="button" value="Submit"></input>
       </div>
+    </div>
   </template>
-  <script>
-    Polymer('at-form', {
-      ready: function () {
-        var self = this;
-        var formObserver = new ObjectObserver(this.$.form);
-        formObserver.open(function (added, removed, changed, getOldValueFn) {
-          Object.keys(changed).forEach(function (property) {
-            if (property === "valid_") {
-              self.$.submit.disabled = !changed[property];
-            }
-          });
-        });
+</dom-module>
 
-        this.$.submit.disabled = !this.$.form.valid;
-
-        this.$.submit.addEventListener('click', function (event) {
-          // disable the form
-          self.disableForm();
-          self.$.form.updateValidState();
-
-          var data = JSON.stringify(self.$.form.dataBindingObject);
-          self.$.submitAjax.body = data;
-          self.$.submitAjax.go();
-        });
+<script>
+  Polymer({
+    is: 'at-form',
+    properties: {
+      schema: {
+        type: Object,
+        value: {},
+        notify: true
       },
-      submitResponse: function (event, response) {
-        //enable the form
-        this.enableForm();
-        this.$.form.updateValidState();
-
-        // if submit was successfull fire success event
-        var resObj = JSON.parse(response.response);
-        var errorCode = resObj.ErrorCode;
-        if (errorCode === 0) {
-          this.fire('success');
-        }
+      data: {
+        type: Object,
+        value: {},
+        notify: true
       },
-      submitError: function (event, response) {
-        //debugger;
-        var xhr = response.xhr;
-        this.$.errorLabel.textContent = xhr.responseURL + " " + xhr.status + ": " + response.xhr.statusText;
-
-        //enable the form
-        this.enableForm();
-      },
-      enableForm: function () {
-        this.$.submit.removeAttribute('disabled');
-        this.$.form.setAttribute('disabled', 'false');
-      },
-      disableForm: function () {
-        this.$.submit.setAttribute('disabled', 'true');
-        this.$.form.setAttribute('disabled', 'true');
+      url: {
+        type: String,
+        value: '',
+        notify: true
       }
-    });
-  </script>
-</polymer-element>
+    },
+    ready: function () {
+      var self = this;
+      this.$.form.addEventListener('valid-changed', function (e) {
+        self.$.submit.disabled = !self.$.form.invalid;
+      });
+
+      this.$.submit.disabled = this.$.form.invalid;
+
+      this.$.submit.addEventListener('click', function (event) {
+        // disable the form
+        self.disableForm();
+        self.$.form.updateValidState();
+
+        var data = JSON.stringify(self.$.form.data);
+        self.$.submitAjax.body = data;
+        self.$.submitAjax.generateRequest();
+      });
+    },
+    submitResponse: function (event, response) {
+      //enable the form
+      this.enableForm();
+      this.$.form.updateValidState();
+
+      // if submit was successfull fire success event
+      var resObj = response;
+      var errorCode = resObj.ErrorCode;
+      if (errorCode === 0) {
+        this.fire('success');
+      } else {
+        this.fire('error', errorCode + ' ' + resObj.Data.ErrorText);
+      }
+    },
+    submitError: function (event, response) {
+      //debugger;
+      var xhr = response.xhr;
+      this.$.errorLabel.textContent = xhr.responseURL + " " + xhr.status + ": " + response.xhr.statusText;
+
+      //enable the form
+      this.enableForm();
+    },
+    enableForm: function () {
+      this.$.submit.removeAttribute('disabled');
+      this.$.form.setAttribute('disabled', 'false');
+    },
+    disableForm: function () {
+      this.$.submit.setAttribute('disabled', 'true');
+      this.$.form.setAttribute('disabled', 'true');
+    }
+  });
+</script>
