@@ -11,7 +11,7 @@
 
 </head>
 
-<body unresolved>
+<body>
   <at-form id="atForm" url="http://localhost:2014/Activity/adenin.GateKeeper.ClientLog/LogMessage"></at-form>
 
   <script>
@@ -23,8 +23,7 @@
             "xtype": "enum",
             "xvaluelist": "debug,info,warn,error,fatal",
             "value": "info",
-            "description": "Warn Level",
-            "disabled": "true"
+            "description": "Warn Level"
           },
           "message": {
             "type": "string",
@@ -32,10 +31,10 @@
           },
         }
       };
-
+    
       var atForm = document.getElementById('atForm');
       atForm.schema = schema;
-
+      
       atForm.addEventListener('success', function (event) {
         alert("Success");
       });

@@ -40,10 +40,18 @@
     ready: function () {
       var self = this;
       this.$.form.addEventListener('valid-changed', function (e) {
-        self.$.submit.disabled = !self.$.form.invalid;
+        if (!self.$.form.valid) {
+          self.$.submit.setAttribute('disabled', true);
+        } else {
+          self.$.submit.removeAttribute('disabled');
+        }
       });
 
-      this.$.submit.disabled = this.$.form.invalid;
+      if (!this.$.form.valid) {
+        this.$.submit.setAttribute('disabled', true);
+      } else {
+        this.$.submit.removeAttribute('disabled');
+      }
 
       this.$.submit.addEventListener('click', function (event) {
         // disable the form
