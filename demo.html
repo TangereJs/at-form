@@ -22,7 +22,6 @@
             "type": "string",
             "xtype": "enum",
             "xvaluelist": "debug,info,warn,error,fatal",
-            "value": "info",
             "description": "Warn Level"
           },
           "message": {
@@ -31,10 +30,15 @@
           },
         }
       };
-    
+
+      var data = {
+        "logMessageLevel": "info"
+      }
+
       var atForm = document.getElementById('atForm');
       atForm.schema = schema;
-      
+      atForm.data = data;
+
       atForm.addEventListener('success', function (event) {
         alert("Success");
       });

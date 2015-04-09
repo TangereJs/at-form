@@ -4,7 +4,7 @@
 
 <dom-module id="at-form">
   <template>
-    <core-ajax id="submitAjax" url="{{url}}" method="POST" content-type="application/json" on-response="submitResponse" on-error="submitError"></core-ajax>
+    <core-ajax id="submitAjax" url="{{url}}" method="POST" content-type="application/json" on-response="onResponse" on-error="onError"></core-ajax>
     <div class="vertical layout">
       <at-core-form id="form" schema="{{schema}}" data="{{data}}"></at-core-form>
       <div class="horizontal layout left-justified">
@@ -39,34 +39,27 @@
     },
     ready: function () {
       var self = this;
-      this.$.form.addEventListener('valid-changed', function (e) {
-        if (!self.$.form.valid) {
-          self.$.submit.setAttribute('disabled', true);
-        } else {
-          self.$.submit.removeAttribute('disabled');
-        }
-      });
-
-      if (!this.$.form.valid) {
-        this.$.submit.setAttribute('disabled', true);
-      } else {
-        this.$.submit.removeAttribute('disabled');
-      }
 
       this.$.submit.addEventListener('click', function (event) {
-        // disable the form
-        self.disableForm();
-        self.$.form.updateValidState();
+        // validate the form
+        var isFormValid = self.$.form.validate();
 
-        var data = JSON.stringify(self.$.form.data);
-        self.$.submitAjax.body = data;
-        self.$.submitAjax.generateRequest();
+        if (isFormValid) {
+          // if form is valid
+
+          // disable the form
+          self.disableForm();
+
+          // send the request to the server
+          var data = JSON.stringify(self.$.form.data);
+          self.$.submitAjax.body = data;
+          self.$.submitAjax.generateRequest();
+        }
       });
     },
-    submitResponse: function (event, response) {
+    onResponse: function (event, response) {
       //enable the form
       this.enableForm();
-      this.$.form.updateValidState();
 
       // if submit was successfull fire success event
       var resObj = response;
@@ -77,8 +70,8 @@
         this.fire('error', errorCode + ' ' + resObj.Data.ErrorText);
       }
     },
-    submitError: function (event, response) {
-      //debugger;
+    onError: function (event, response) {
+      //show the error message
       var xhr = response.xhr;
       this.$.errorLabel.textContent = xhr.responseURL + " " + xhr.status + ": " + response.xhr.statusText;
 
@@ -87,11 +80,11 @@
     },
     enableForm: function () {
       this.$.submit.removeAttribute('disabled');
-      this.$.form.setAttribute('disabled', 'false');
+      this.$.form.disabled = false;
     },
     disableForm: function () {
       this.$.submit.setAttribute('disabled', 'true');
-      this.$.form.setAttribute('disabled', 'true');
+      this.$.form.disabled = true;
     }
   });
 </script>
