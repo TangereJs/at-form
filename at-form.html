@@ -1,10 +1,10 @@
-<link rel="import" href="../core-ajax/core-ajax.html" />
+<link rel="import" href="../at-core-activity/at-core-activity.html" />
 <link rel="import" href="../at-core-form/at-core-form.html" />
 <link rel="import" href="../layout/layout.html" />
 
 <dom-module id="at-form">
   <template>
-    <core-ajax id="submitAjax" url="{{url}}" method="POST" content-type="application/json" on-response="onResponse" on-error="onError"></core-ajax>
+    <at-core-activity id="submitAjax" url="{{url}}" method="POST" content-type="application/json" on-response="onResponse" on-error="onError"></at-core-activity>
     <div class="vertical layout">
       <at-core-form id="form" schema="{{schema}}" data="{{data}}"></at-core-form>
       <div class="horizontal layout left-justified">
