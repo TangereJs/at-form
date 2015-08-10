@@ -73,7 +73,11 @@
     onError: function (event, response) {
       //show the error message
       var xhr = response.xhr;
-      this.$.errorLabel.textContent = xhr.responseURL + " " + xhr.status + ": " + response.xhr.statusText;
+      if (xhr) {
+        this.$.errorLabel.textContent = xhr.responseURL + " " + xhr.status + ": " + response.xhr.statusText;
+      } else {
+        this.$.errorLabel.innerHTML = response;
+      }
 
       //enable the form
       this.enableForm();
