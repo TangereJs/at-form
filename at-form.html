@@ -6,7 +6,7 @@
   <template>
     <at-core-activity id="submitAjax" url="{{url}}" method="POST" content-type="application/json" on-response="onResponse" on-error="onError"></at-core-activity>
     <div class="vertical layout">
-      <at-core-form id="form" schema="{{schema}}" data="{{data}}"></at-core-form>
+      <at-core-form id="form" schema="{{schema}}" data="{{data}}" layout="{{layout}}"></at-core-form>
       <div class="horizontal layout left-justified">
         <label id="errorLabel"></label>
       </div>
@@ -35,6 +35,10 @@
         type: String,
         value: '',
         notify: true
+      },
+      layout: {
+        type: String,
+        value: 'vertical'        
       }
     },
     ready: function () {

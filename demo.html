@@ -9,11 +9,45 @@
   <link rel="import" href="../polymer/polymer.html" />
   <link rel="import" href="at-form.html">
 
+  <style>
+  .container-w {
+    width: 1024px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-bottom: 64px;
+  }
+
+  .container-m {
+    width: 768px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-bottom: 64px;
+  }
+
+  .container-s {
+    width: 320px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-bottom: 64px;
+  }
+
+    [class*='col-'] {
+      border: 1px dashed blue;
+    }
+  </style>
+
 </head>
 
 <body>
-  <at-form id="atForm" url="http://localhost:2014/Activity/adenin.GateKeeper.ClientLog/LogMessage"></at-form>
-
+  <div class="container-w">
+    <at-form id="atForm" url="http://localhost:2014/Activity/adenin.GateKeeper.ClientLog/LogMessage"></at-form>
+  </div>
   <script>
     document.addEventListener('WebComponentsReady', function () {
       var schema = {
