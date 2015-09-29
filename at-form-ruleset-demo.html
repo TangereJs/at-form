@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>at-form ruleset Demo</title>
+
+  <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../polymer/polymer.html" />
+  <link rel="import" href="at-form.html">
+
+  <style>
+    .container-w {
+      width: 1024px;
+      padding-right: 15px;
+      padding-left: 15px;
+      margin-right: auto;
+      margin-left: auto;
+      padding-bottom: 64px;
+    }
+
+    .container-m {
+      width: 768px;
+      padding-right: 15px;
+      padding-left: 15px;
+      margin-right: auto;
+      margin-left: auto;
+      padding-bottom: 64px;
+    }
+
+    .container-s {
+      width: 320px;
+      padding-right: 15px;
+      padding-left: 15px;
+      margin-right: auto;
+      margin-left: auto;
+      padding-bottom: 64px;
+    }
+
+    [class*='col-'] {
+      border: 1px dashed blue;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="container-w">
+    <at-form id="atForm"></at-form>
+  </div>
+  <script>
+    document.addEventListener('WebComponentsReady', function() {
+      var ruleSchema = {
+        properties: {
+          textfield1: {
+            description: 'Text Field1',
+            type: 'string'
+          },
+          textfield2: {
+            description: 'Text Field2',
+            type: 'string'
+          },
+          textfield1Required: {
+            description: 'Text Field 1 Required',
+            type: 'boolean'
+          },
+          textfield1Disabled: {
+            description: 'Text Field 1 Disabled',
+            type: 'boolean'
+          }
+        }
+      };
+
+      var rule0Data = {
+        conditions: {
+          "all": [{
+            name: "textfield1Required",
+            operator: "equalTo",
+            value: "true"
+          }, ]
+        },
+        actions: [{
+          name: "action-select",
+          value: "setFieldState",
+          fields: [{
+            name: "fieldId",
+            value: "textfield1",
+            fields: [{
+              name: "newState",
+              value: "required"
+            }]
+          }]
+        }]
+      };
+
+      var rule1Data = {
+        conditions: {
+          "all": [{
+            name: "textfield1Disabled",
+            operator: "equalTo",
+            value: "true"
+          }]
+        },
+        actions: [{
+          name: "action-select",
+          value: "setFieldState",
+          fields: [{
+            name: "fieldId",
+            value: "textfield1",
+            fields: [{
+              name: "newState",
+              value: "disabled"
+            }]
+          }]
+        }]
+      };
+
+      var rule2Data = {
+        conditions: {
+          "all": [{
+            name: "textfield1",
+            operator: "notEqualTo",
+            compareTo: "field",
+            value: "textfield2"
+          }]
+        },
+        actions: [{
+          name: "action-select",
+          value: "alert",
+          fields: [{
+            "name": "message",
+            "value": "textfield1 needs to be equal to textfield2"
+          }]
+        }]
+      };
+
+      var ruleValue = [
+        {
+          caption: "Text Field 1 becomes required",
+          position: 0,
+          rule: rule0Data
+        },
+        {
+          caption: "Text Field 1 becomes disabled",
+          position: 1,
+          rule: rule1Data
+        },
+        {
+          caption: "If TextField1 !== TextField2 alert!",
+          position: 2,
+          rule: rule2Data
+        }
+      ];
+
+      var schema = {
+        "properties": {
+          "textfield1": {
+            "type": "string",
+            "placeholder": "textfield1",
+            "title": "Text Field 1"
+          },
+          "textfield2": {
+            "type": "string",
+            "placeholder": "textfield2",
+            "title": "Text Field 2"
+          },
+          "textfield1Required": {
+            "type": "bool",
+            "title": "Make Text Field 1 required"
+          },
+          "textfield1Disabled": {
+            "type": "bool",
+            "title": "Make Text Field 1 disabled"
+          },
+        },
+        "rules": {
+          "ruleConfig": ruleSchema,
+          "value": ruleValue
+        }
+      };
+
+      var atForm = document.getElementById('atForm');
+      atForm.schema = schema;
+
+      atForm.addEventListener('success', function(event) {
+        //alert("Success");
+      });
+
+      atForm.addEventListener('error', function(event) {
+        //alert(event.detail);
+      });
+    });
+  </script>
+</body>
+
+</html>

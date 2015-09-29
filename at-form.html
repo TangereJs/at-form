@@ -1,16 +1,32 @@
 <link rel="import" href="../at-core-activity/at-core-activity.html" />
 <link rel="import" href="../at-core-form/at-core-form.html" />
+<link rel="import" href="../at-form-ruleset/at-form-ruleset.html">
 <link rel="import" href="../layout/layout.html" />
 
 <dom-module id="at-form">
+  <style>
+    .light-padding {
+      padding: 2px 6px;
+    }
+  </style>
+
   <template>
     <at-core-activity id="submitAjax" url="{{url}}" method="POST" content-type="application/json" on-response="onResponse" on-error="onError"></at-core-activity>
     <div class="vertical layout">
-      <at-core-form id="form" schema="{{schema}}" data="{{data}}" layout="{{layout}}"></at-core-form>
-      <div class="horizontal layout left-justified">
+      <div class="horizontal layout light-padding">
+        <div class="vertical layout flex-6 light-padding">
+          <label>Form: </label>
+          <at-core-form id="form" schema="{{schema}}" data="{{data}}" layout="{{layout}}"></at-core-form>
+        </div>
+        <div class="vertical layout flex-6 light-padding">
+          <at-form-ruleset id="ruleset"></at-form-ruleset>
+        </div>
+      <div class="horizontal layout left-justified light-padding">
+      </div>
         <label id="errorLabel"></label>
       </div>
-      <div class="horizontal layout left-justified">
+      <div class="horizontal layout center-justified light-padding">
+        <button id="verifyRuleset" role="button">Verify Ruleset</button>
         <input type="button" id="submit" role="button" value="Submit"></input>
       </div>
     </div>
@@ -24,7 +40,7 @@
       schema: {
         type: Object,
         value: {},
-        notify: true
+        observer: "schemaChanged"
       },
       data: {
         type: Object,
@@ -33,18 +49,18 @@
       },
       url: {
         type: String,
-        value: '',
-        notify: true
+        value: ''
       },
       layout: {
         type: String,
-        value: 'vertical'        
-      }
+        value: 'vertical'
+      },
+      _scopeCssViaAttr: true,
     },
-    ready: function () {
+    ready: function() {
       var self = this;
 
-      this.$.submit.addEventListener('click', function (event) {
+      this.$.submit.addEventListener('click', function(event) {
         // validate the form
         var isFormValid = self.$.form.validate();
 
@@ -60,8 +76,67 @@
           self.$.submitAjax.generateRequest();
         }
       });
+
+      this.$.verifyRuleset.addEventListener('click', function(event){
+        event.preventDefault();
+
+        var
+          ruleIndex,
+          rule,
+          engine,
+          conditionsAdapter,
+          actionsAdapter;
+
+        for (ruleIndex = 0; ruleIndex < ruleset.value.length; ruleIndex += 1) {
+          rule = ruleset.value[ruleIndex];
+          engine = new window.RuleEngine(rule.rule);
+
+          conditionsAdapter = form.data;
+          actionsAdapter = {
+            alert: function (data) {
+              alert(data.find("message"));
+            },
+            updateField: function (data) {
+              console.log("data", data);
+              var fieldId = data.find("fieldId");
+              console.log("fieldId", fieldId);
+              fieldId = fieldId.replace('Field', '');
+              var val = data.find("fieldId", "newValue");
+              if (val === "true") {
+                val = true;
+              }
+              if (val === "false") {
+                val = false;
+              }
+              form.updateFormElementData(fieldId, val);
+            },
+            setFieldState: function (data) {
+              var fieldId = data.find("fieldId");
+              var val = data.find("fieldId", "newState");
+              fieldId = fieldId.replace('Field', '');
+              form.setElementState(fieldId, val, val);
+            },
+            copyFieldValue: function (data) {
+              var srcFieldId = data.find('fieldId');
+              srcFieldId = srcFieldId.replace('Field', '');
+              var destFieldId = data.find('newValue');
+
+              var srcValue = coreForm.data[srcFieldId];
+              destFieldId = destFieldId.replace('Field', '');
+              form.updateFormElementData(destFieldId, srcValue);
+            }
+          };
+          engine.run(conditionsAdapter, actionsAdapter);
+        }
+      });
     },
-    onResponse: function (event, response) {
+    schemaChanged: function(newValue, oldValue) {
+      if (newValue.rules !== undefined) {
+        this.$.ruleset.ruleConfig = newValue.rules.ruleConfig;
+        this.$.ruleset.value = newValue.rules.value;
+      }
+    },
+    onResponse: function(event, response) {
       //enable the form
       this.enableForm();
 
@@ -74,7 +149,7 @@
         this.fire('error', errorCode + ' ' + resObj.Data.ErrorText);
       }
     },
-    onError: function (event, response) {
+    onError: function(event, response) {
       //show the error message
       var xhr = response.xhr;
       if (xhr) {
@@ -86,11 +161,11 @@
       //enable the form
       this.enableForm();
     },
-    enableForm: function () {
+    enableForm: function() {
       this.$.submit.removeAttribute('disabled');
       this.$.form.disabled = false;
     },
-    disableForm: function () {
+    disableForm: function() {
       this.$.submit.setAttribute('disabled', 'true');
       this.$.form.disabled = true;
     }
