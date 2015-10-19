@@ -53,19 +53,19 @@
       var ruleSchema = {
         properties: {
           textfield1: {
-            description: 'Text Field1',
+            title: 'Text Field1',
             type: 'string'
           },
           textfield2: {
-            description: 'Text Field2',
+            title: 'Text Field2',
             type: 'string'
           },
           textfield1Required: {
-            description: 'Text Field 1 Required',
+            title: 'Text Field 1 Required',
             type: 'boolean'
           },
           textfield1Disabled: {
-            description: 'Text Field 1 Disabled',
+            title: 'Text Field 1 Disabled',
             type: 'boolean'
           }
         }
@@ -73,51 +73,40 @@
 
       var rule0Data = {
         conditions: {
-          "all": [{
+          kind: "all",
+          conditions: [{
             name: "textfield1Required",
             operator: "equalTo",
             value: "true"
-          }, ]
+          }]
         },
         actions: [{
-          name: "action-select",
-          value: "setFieldState",
-          fields: [{
-            name: "fieldId",
-            value: "textfield1",
-            fields: [{
-              name: "newState",
-              value: "required"
-            }]
-          }]
+          actionName: "setFieldState",
+          fieldName: "textfield1",
+          state: "required"
         }]
       };
 
       var rule1Data = {
         conditions: {
-          "all": [{
+          kind: "all",
+          conditions: [{
             name: "textfield1Disabled",
             operator: "equalTo",
             value: "true"
           }]
         },
         actions: [{
-          name: "action-select",
-          value: "setFieldState",
-          fields: [{
-            name: "fieldId",
-            value: "textfield1",
-            fields: [{
-              name: "newState",
-              value: "disabled"
-            }]
-          }]
+          actionName: "setFieldState",
+          fieldName: "textfield1",
+          state: "disabled"
         }]
       };
 
       var rule2Data = {
         conditions: {
-          "all": [{
+          kind: "all",
+          conditions: [{
             name: "textfield1",
             operator: "notEqualTo",
             compareTo: "field",
@@ -125,32 +114,24 @@
           }]
         },
         actions: [{
-          name: "action-select",
-          value: "alert",
-          fields: [{
-            "name": "message",
-            "value": "textfield1 needs to be equal to textfield2"
-          }]
+          actionName: "alert",
+          message: "textfield1 needs to be equal to textfield2"
         }]
       };
 
-      var ruleValue = [
-        {
-          caption: "Text Field 1 becomes required",
-          position: 0,
-          rule: rule0Data
-        },
-        {
-          caption: "Text Field 1 becomes disabled",
-          position: 1,
-          rule: rule1Data
-        },
-        {
-          caption: "If TextField1 !== TextField2 alert!",
-          position: 2,
-          rule: rule2Data
-        }
-      ];
+      var ruleValue = [{
+        caption: "Text Field 1 becomes required",
+        position: 0,
+        rule: rule0Data
+      }, {
+        caption: "Text Field 1 becomes disabled",
+        position: 1,
+        rule: rule1Data
+      }, {
+        caption: "If TextField1 !== TextField2 alert!",
+        position: 2,
+        rule: rule2Data
+      }];
 
       var schema = {
         "properties": {
@@ -165,11 +146,11 @@
             "title": "Text Field 2"
           },
           "textfield1Required": {
-            "type": "bool",
+            "type": "boolean",
             "title": "Make Text Field 1 required"
           },
           "textfield1Disabled": {
-            "type": "bool",
+            "type": "boolean",
             "title": "Make Text Field 1 disabled"
           },
         },

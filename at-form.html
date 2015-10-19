@@ -94,35 +94,23 @@
           conditionsAdapter = form.data;
           actionsAdapter = {
             alert: function (data) {
-              alert(data.find("message"));
+              alert(data.message);
             },
             updateField: function (data) {
-              console.log("data", data);
-              var fieldId = data.find("fieldId");
-              console.log("fieldId", fieldId);
-              fieldId = fieldId.replace('Field', '');
-              var val = data.find("fieldId", "newValue");
-              if (val === "true") {
-                val = true;
-              }
-              if (val === "false") {
-                val = false;
-              }
-              form.updateFormElementData(fieldId, val);
+              var fieldName = data.fieldName;
+              var value = data.updateTo;
+              form.updateFormElementData(fieldName, value);
             },
             setFieldState: function (data) {
-              var fieldId = data.find("fieldId");
-              var val = data.find("fieldId", "newState");
-              fieldId = fieldId.replace('Field', '');
+              var fieldId = data.fieldName;
+              var val = data.state;
               form.setElementState(fieldId, val, val);
             },
             copyFieldValue: function (data) {
-              var srcFieldId = data.find('fieldId');
-              srcFieldId = srcFieldId.replace('Field', '');
-              var destFieldId = data.find('newValue');
+              var srcFieldId = data.fieldName;
+              var destFieldId = data.copyTo;
 
               var srcValue = coreForm.data[srcFieldId];
-              destFieldId = destFieldId.replace('Field', '');
               form.updateFormElementData(destFieldId, srcValue);
             }
           };
