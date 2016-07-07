@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "layout": "Polymer/layout#0.8-preview",
+    "tangere": "TangereJs/tangere#0.8-preview",
     "at-core-form": "TangereJs/at-core-form#0.8-preview",
     "at-core-activity": "TangereJs/at-core-activity#0.8-preview"
   }

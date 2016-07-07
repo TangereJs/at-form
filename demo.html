@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>at-form Demo</title>
 
-  <script src="../webcomponentsjs/webcomponents.js"></script>
-  <link rel="import" href="../polymer/polymer.html" />
+  <script src="../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="at-form.html">
 
   <style>
@@ -55,7 +54,7 @@
           "logMessageLevel": {
             "type": "string",
             "xtype": "enum",
-            "xvaluelist": "debug,info,warn,error,fatal",
+            "available": "debug,info,warn,error,fatal",
             "description": "Warn Level",
             "default": "info"
           },
