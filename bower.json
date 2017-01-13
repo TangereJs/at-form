@@ -2,10 +2,10 @@
   "name": "at-form",
   "private": true,
   "dependencies": {
-    "tangere": "TangereJs/tangere#0.8-preview",
-    "at-core-activity": "TangereJs/at-core-activity#0.8-preview",
-    "at-core-form": "TangereJs/at-core-form#0.8-preview",
-    "at-form-ruleset": "TangereJs/at-form-ruleset#0.8-preview",
+    "tangere": "TangereJs/tangere#master",
+    "at-core-activity": "TangereJs/at-core-activity#master",
+    "at-core-form": "TangereJs/at-core-form#master",
+    "at-form-ruleset": "TangereJs/at-form-ruleset#master",
     "layout": "Polymer/layout#master"
   }
 }
