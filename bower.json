@@ -6,6 +6,6 @@
     "at-core-activity": "TangereJs/at-core-activity#master",
     "at-core-form": "TangereJs/at-core-form#master",
     "at-form-ruleset": "TangereJs/at-form-ruleset#master",
-    "layout": "Polymer/layout#master"
+    "layout": "TangereJs/layout#master"
   }
 }
